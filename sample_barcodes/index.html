@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sample Barcodes & GI Product Details</title>
+    <style>
+        :root {
+            --primary: #C04000;
+            --gold: #D4AF37;
+            --green: #1B5E20;
+            --bg: #F8F5F0;
+            --card-bg: #FFFFFF;
+            --text-dark: #1E1E1E;
+            --text-muted: #555555;
+            --border: #E2D9D0;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-dark);
+            padding: 30px 20px;
+        }
+        .header {
+            max-width: 1200px;
+            margin: 0 auto 30px auto;
+            text-align: center;
+        }
+        .header h1 {
+            color: var(--primary);
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        .header p {
+            color: var(--text-muted);
+            font-size: 16px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .instructions {
+            max-width: 1200px;
+            margin: 0 auto 25px auto;
+            background: #FFF3E0;
+            border-left: 5px solid var(--primary);
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .print-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .print-btn:hover { opacity: 0.9; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(540px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            page-break-inside: avoid;
+        }
+        .card-header {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+        .badge {
+            display: inline-block;
+            background: #E8F5E9;
+            color: var(--green);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin-bottom: 6px;
+        }
+        .card-header h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+        .category {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .barcode-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            background: #FAFAFA;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px dashed var(--gold);
+        }
+        .barcode-box {
+            flex: 1;
+            text-align: center;
+        }
+        .barcode-img {
+            max-width: 100%;
+            height: 90px;
+            object-fit: contain;
+            background: white;
+            padding: 6px;
+            border-radius: 6px;
+        }
+        .qr-box {
+            width: 100px;
+            text-align: center;
+        }
+        .qr-img {
+            width: 90px;
+            height: 90px;
+            background: white;
+            padding: 4px;
+            border-radius: 6px;
+        }
+        .code-title {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .barcode-number {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #F1EFEA;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+        .copy-btn {
+            background: white;
+            border: 1px solid #CCC;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .copy-btn:hover { background: #EAEAEA; }
+        .section {
+            border-radius: 10px;
+            padding: 12px 14px;
+            border: 1px solid var(--border);
+            font-size: 13px;
+        }
+        .section-1 { background: #FFF9F5; border-color: #FFD8C7; }
+        .section-2 { background: #FFFCF2; border-color: #FFEBB3; }
+        .section-3 { background: #F6FAF6; border-color: #C8E6C9; }
+        .section-title {
+            font-weight: 700;
+            font-size: 13px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .sec-badge {
+            font-size: 10px;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 800;
+            color: white;
+        }
+        .section-1 .sec-badge { background: var(--primary); }
+        .section-2 .sec-badge { background: #B38600; }
+        .section-3 .sec-badge { background: var(--green); }
+        .detail-row {
+            display: flex;
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+        .detail-row:last-child { margin-bottom: 0; }
+        .label {
+            width: 170px;
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        .val {
+            font-weight: 500;
+            color: var(--text-dark);
+            font-size: 12px;
+        }
+        @media print {
+            body { background: white; padding: 0; }
+            .instructions, .print-btn, .copy-btn { display: none; }
+            .card { box-shadow: none; border: 1px solid #999; margin-bottom: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Craft & GI Verification Test Barcodes</h1>
+        <p>Scan these barcodes directly from your screen or print this sheet to test the Android Scanner app.</p>
+    </div>
+
+    <div class="instructions">
+        <span>📸 <strong>Testing Instruction:</strong> Open the <strong>Craft & GI Scanner</strong> Android app, aim the camera at any of the barcodes or QR codes below, and watch the verified details appear instantly!</span>
+        <button class="print-btn" onclick="window.print()">🖨️ Print Test Sheet</button>
+    </div>
+
+    <div class="grid">
+        
+        <div class="card">
+            <div class="card-header">
+                <span class="badge">GI Authenticated</span>
+                <h2>Authentic Kashmiri Pashmina Stole</h2>
+                <div class="category">GI Registered Handicraft</div>
+            </div>
+
+            <div class="barcode-container">
+                <div class="barcode-box">
+                    <div class="code-title">Barcode (Code-128)</div>
+                    <img src="1_8901234567890_barcode.png" alt="Barcode 8901234567890" class="barcode-img">
+                </div>
+                <div class="qr-box">
+                    <div class="code-title">QR Code</div>
+                    <img src="1_8901234567890_qr.png" alt="QR 8901234567890" class="qr-img">
+                </div>
+            </div>
+            
+            <div class="barcode-number">
+                <span>Barcode: <strong>8901234567890</strong></span>
+                <button class="copy-btn" onclick="navigator.clipboard.writeText('8901234567890'); alert('Copied 8901234567890 to clipboard!');">Copy Code</button>
+            </div>
+
+            <!-- SECTION 1 -->
+            <div class="section section-1">
+                <div class="section-title">
+                    <span class="sec-badge">Section 1</span> Fabric & Yarn Composition
+                </div>
+                <div class="detail-row">
+                    <span class="label">Fabric Composition:</span>
+                    <span class="val">100% Pure Changthangi Pashmina Wool</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Yarn Spinning:</span>
+                    <span class="val">Hand Spun (Traditional Charkha / Yinder)</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Fabric Weave:</span>
+                    <span class="val">Handloom Diamond Weave (Chashm-e-Bulbul)</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Embroidery Yarn:</span>
+                    <span class="val">Pure Mulberry Silk Thread</span>
+                </div>
+            </div>
+
+            <!-- SECTION 2 -->
+            <div class="section section-2">
+                <div class="section-title">
+                    <span class="sec-badge">Section 2</span> Product Specifications
+                </div>
+                <div class="detail-row">
+                    <span class="label">Design:</span>
+                    <span class="val">Traditional Paisley (Kalka / Badam motif) with Hashiya border</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Size:</span>
+                    <span class="val">200 cm x 70 cm (Stole)</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Weight:</span>
+                    <span class="val">145 grams</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Embroidery:</span>
+                    <span class="val">Sozni Needlework (Finely handcrafted)</span>
+                </div>
+            </div>
+
+            <!-- SECTION 3 -->
+            <div class="section section-3">
+                <div class="section-title">
+                    <span class="sec-badge">Section 3</span> GI & Artisan Origin Details
+                </div>
+                <div class="detail-row">
+                    <span class="label">Authorized GI User:</span>
+                    <span class="val">Craft Development Institute (CDI) Srinagar / GI Reg. No: GI-KASH-PASH-042</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Address of GI User:</span>
+                    <span class="val">Noorbagh Industrial Complex, Srinagar, Jammu & Kashmir - 190002</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Artisan / Weaver:</span>
+                    <span class="val">Master Ghulam Mohammad Mir</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Address of Artisan:</span>
+                    <span class="val">Mir Mohalla, Zadibal, Srinagar, Jammu & Kashmir - 190011</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <span class="badge">GI Authenticated</span>
+                <h2>Kanchipuram Silk Bridal Saree</h2>
+                <div class="category">GI Handloom Silk</div>
+            </div>
+
+            <div class="barcode-container">
+                <div class="barcode-box">
+                    <div class="code-title">Barcode (Code-128)</div>
+                    <img src="2_8909876543210_barcode.png" alt="Barcode 8909876543210" class="barcode-img">
+                </div>
+                <div class="qr-box">
+                    <div class="code-title">QR Code</div>
+                    <img src="2_8909876543210_qr.png" alt="QR 8909876543210" class="qr-img">
+                </div>
+            </div>
+            
+            <div class="barcode-number">
+                <span>Barcode: <strong>8909876543210</strong></span>
+                <button class="copy-btn" onclick="navigator.clipboard.writeText('8909876543210'); alert('Copied 8909876543210 to clipboard!');">Copy Code</button>
+            </div>
+
+            <!-- SECTION 1 -->
+            <div class="section section-1">
+                <div class="section-title">
+                    <span class="sec-badge">Section 1</span> Fabric & Yarn Composition
+                </div>
+                <div class="detail-row">
+                    <span class="label">Fabric Composition:</span>
+                    <span class="val">100% Pure Mulberry Silk & Pure Silver Zari</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Yarn Spinning:</span>
+                    <span class="val">Twisted 3-ply Mulberry Silk Yarn</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Fabric Weave:</span>
+                    <span class="val">Korvai Handloom Technique with Petni interlocking</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Embroidery Yarn:</span>
+                    <span class="val">Gold & Silver dipped Zari metallic thread</span>
+                </div>
+            </div>
+
+            <!-- SECTION 2 -->
+            <div class="section section-2">
+                <div class="section-title">
+                    <span class="sec-badge">Section 2</span> Product Specifications
+                </div>
+                <div class="detail-row">
+                    <span class="label">Design:</span>
+                    <span class="val">Mayil (Peacock) & Rudraksha motifs with Temple Border</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Size:</span>
+                    <span class="val">6.2 meters (includes 80 cm unstitched blouse piece)</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Weight:</span>
+                    <span class="val">820 grams</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Embroidery:</span>
+                    <span class="val">Woven Zari Brocade</span>
+                </div>
+            </div>
+
+            <!-- SECTION 3 -->
+            <div class="section section-3">
+                <div class="section-title">
+                    <span class="sec-badge">Section 3</span> GI & Artisan Origin Details
+                </div>
+                <div class="detail-row">
+                    <span class="label">Authorized GI User:</span>
+                    <span class="val">Tamil Nadu Zari & Silk Weavers Cooperative Society / GI Reg. No: GI-TN-KAN-019</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Address of GI User:</span>
+                    <span class="val">12 Gandhi Road, Kanchipuram, Tamil Nadu - 631501</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Artisan / Weaver:</span>
+                    <span class="val">R. Shanmugam & Sons Weaving Guild</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Address of Artisan:</span>
+                    <span class="val">Pillayar Palayam, Kanchipuram, Tamil Nadu - 631502</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <span class="badge">GI Authenticated</span>
+                <h2>Banarasi Katan Silk Brocade</h2>
+                <div class="category">GI Registered Handloom</div>
+            </div>
+
+            <div class="barcode-container">
+                <div class="barcode-box">
+                    <div class="code-title">Barcode (Code-128)</div>
+                    <img src="3_8904567812345_barcode.png" alt="Barcode 8904567812345" class="barcode-img">
+                </div>
+                <div class="qr-box">
+                    <div class="code-title">QR Code</div>
+                    <img src="3_8904567812345_qr.png" alt="QR 8904567812345" class="qr-img">
+                </div>
+            </div>
+            
+            <div class="barcode-number">
+                <span>Barcode: <strong>8904567812345</strong></span>
+                <button class="copy-btn" onclick="navigator.clipboard.writeText('8904567812345'); alert('Copied 8904567812345 to clipboard!');">Copy Code</button>
+            </div>
+
+            <!-- SECTION 1 -->
+            <div class="section section-1">
+                <div class="section-title">
+                    <span class="sec-badge">Section 1</span> Fabric & Yarn Composition
+                </div>
+                <div class="detail-row">
+                    <span class="label">Fabric Composition:</span>
+                    <span class="val">100% Pure Katan Natural Silk with Metallic Warp</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Yarn Spinning:</span>
+                    <span class="val">Double-twisted Filature Silk Yarn</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Fabric Weave:</span>
+                    <span class="val">Handloom Jangla Brocade Weave</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Embroidery Yarn:</span>
+                    <span class="val">Gold Tested Zari Thread</span>
+                </div>
+            </div>
+
+            <!-- SECTION 2 -->
+            <div class="section section-2">
+                <div class="section-title">
+                    <span class="sec-badge">Section 2</span> Product Specifications
+                </div>
+                <div class="detail-row">
+                    <span class="label">Design:</span>
+                    <span class="val">Floral Shikargah hunting scene with gold foliage border</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Size:</span>
+                    <span class="val">5.5 meters saree length, 45 inches width</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Weight:</span>
+                    <span class="val">680 grams</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Embroidery:</span>
+                    <span class="val">Hand-woven Meenakari Resham Inlay</span>
+                </div>
+            </div>
+
+            <!-- SECTION 3 -->
+            <div class="section section-3">
+                <div class="section-title">
+                    <span class="sec-badge">Section 3</span> GI & Artisan Origin Details
+                </div>
+                <div class="detail-row">
+                    <span class="label">Authorized GI User:</span>
+                    <span class="val">Banaras Bunkar Samiti / GI Reg. No: GI-UP-BAN-088</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Address of GI User:</span>
+                    <span class="val">Chowk Bazar, Kotwali, Varanasi, Uttar Pradesh - 221001</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Artisan / Weaver:</span>
+                    <span class="val">Ustad Irfan Ansari</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Address of Artisan:</span>
+                    <span class="val">Madanpura, Varanasi, Uttar Pradesh - 221001</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <span class="badge">GI Authenticated</span>
+                <h2>Chanderi Handloom Tissue Saree</h2>
+                <div class="category">GI Handwoven Textile</div>
+            </div>
+
+            <div class="barcode-container">
+                <div class="barcode-box">
+                    <div class="code-title">Barcode (Code-128)</div>
+                    <img src="4_123456789012_barcode.png" alt="Barcode 123456789012" class="barcode-img">
+                </div>
+                <div class="qr-box">
+                    <div class="code-title">QR Code</div>
+                    <img src="4_123456789012_qr.png" alt="QR 123456789012" class="qr-img">
+                </div>
+            </div>
+            
+            <div class="barcode-number">
+                <span>Barcode: <strong>123456789012</strong></span>
+                <button class="copy-btn" onclick="navigator.clipboard.writeText('123456789012'); alert('Copied 123456789012 to clipboard!');">Copy Code</button>
+            </div>
+
+            <!-- SECTION 1 -->
+            <div class="section section-1">
+                <div class="section-title">
+                    <span class="sec-badge">Section 1</span> Fabric & Yarn Composition
+                </div>
+                <div class="detail-row">
+                    <span class="label">Fabric Composition:</span>
+                    <span class="val">70% Degummed Silk Warp, 30% Fine Mercerized Cotton Weft</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Yarn Spinning:</span>
+                    <span class="val">Extra-fine 300s Count Hand-drafted Cotton & Organza Silk</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Fabric Weave:</span>
+                    <span class="val">Traditional Chanderi Plain Weave with Eknalis</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Embroidery Yarn:</span>
+                    <span class="val">Untwisted Silk Floss & Gold Zari</span>
+                </div>
+            </div>
+
+            <!-- SECTION 2 -->
+            <div class="section section-2">
+                <div class="section-title">
+                    <span class="sec-badge">Section 2</span> Product Specifications
+                </div>
+                <div class="detail-row">
+                    <span class="label">Design:</span>
+                    <span class="val">Ashrafi (Coin) Buti with Nakshi Gold Border</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Size:</span>
+                    <span class="val">6.3 meters length x 1.15 meters width</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Weight:</span>
+                    <span class="val">390 grams</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Embroidery:</span>
+                    <span class="val">Hand-manipulated Buti extra weft inlay</span>
+                </div>
+            </div>
+
+            <!-- SECTION 3 -->
+            <div class="section section-3">
+                <div class="section-title">
+                    <span class="sec-badge">Section 3</span> GI & Artisan Origin Details
+                </div>
+                <div class="detail-row">
+                    <span class="label">Authorized GI User:</span>
+                    <span class="val">Chanderi Weavers Intellectual Property Guild / GI Reg. No: GI-MP-CHA-007</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Address of GI User:</span>
+                    <span class="val">Fort View Road, Chanderi, Ashoknagar, Madhya Pradesh - 473446</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Artisan / Weaver:</span>
+                    <span class="val">Smt. Rukmani Bai & Family</span>
+                </div>
+                <div class="detail-row">
+                    <span class="label">Address of Artisan:</span>
+                    <span class="val">Bunkar Colony, Chanderi, Madhya Pradesh - 473446</span>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</body>
+</html>

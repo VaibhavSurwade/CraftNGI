@@ -1,0 +1,60 @@
+# ==============================================================================
+# Craft & GI Verification Project - .gitignore
+# ==============================================================================
+
+# OS & Editor Metadata
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Python Virtual Environments & Caches
+venv/
+backend/venv/
+__pycache__/
+*/__pycache__/
+*/*/__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+backend/.pytest_cache/
+*.egg-info/
+.coverage
+htmlcov/
+
+# Local Environment Variables & SQLite Databases
+backend/.env
+.env
+*.db
+backend/craft_products.db
+
+# Nuitka Compilation & Delivery Bundles
+dist_backend/
+run_server.build/
+run_server.dist/
+craft-backend-client-bundle/
+craft-backend-windows-bundle/
+craft-backend-client-bundle.tar.gz
+craft-backend-windows-bundle.zip
+
+# Android Build Outputs & Gradle Caches
+android/.gradle/
+.gradle/
+android/**/build/
+android/app/build/
+android/admin/build/
+android/local.properties
+android/.kotlin/
+gradle-8.10.2/
+
+# Android Keystores & Release Keys
+*.jks
+*.keystore
+keystore.properties
+CraftAdmin-release.apk
+CraftScanner-debug.apk
+CraftScanner-release.apk
+CraftAdmin-debug.apk

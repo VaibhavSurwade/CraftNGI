@@ -1,0 +1,455 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Craft & GI Product Verification API",
+    "description": "Backend API for scanning barcodes and retrieving GI craft product details.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "Root"
+        ],
+        "summary": "Root",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Health Check",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "List Products",
+        "description": "Retrieve all products in the database.",
+        "operationId": "list_products_api_products_get",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "title": "Skip"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductResponse"
+                  },
+                  "title": "Response List Products Api Products Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Create Product",
+        "description": "Register a new product with barcode and GI specifications.",
+        "operationId": "create_product_api_products_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products/{barcode}": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Get Product By Barcode",
+        "description": "Fetch product specifications and GI authenticity details by scanned barcode.",
+        "operationId": "get_product_by_barcode_api_products__barcode__get",
+        "parameters": [
+          {
+            "name": "barcode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Barcode"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ProductCreate": {
+        "properties": {
+          "barcode": {
+            "type": "string",
+            "title": "Barcode"
+          },
+          "product_name": {
+            "type": "string",
+            "title": "Product Name"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category",
+            "default": "Handloom / GI Craft"
+          },
+          "fabric_composition": {
+            "type": "string",
+            "title": "Fabric Composition"
+          },
+          "yarn_spinning": {
+            "type": "string",
+            "title": "Yarn Spinning"
+          },
+          "fabric_weave": {
+            "type": "string",
+            "title": "Fabric Weave"
+          },
+          "embroidery_yarn": {
+            "type": "string",
+            "title": "Embroidery Yarn"
+          },
+          "design": {
+            "type": "string",
+            "title": "Design"
+          },
+          "size": {
+            "type": "string",
+            "title": "Size"
+          },
+          "weight": {
+            "type": "string",
+            "title": "Weight"
+          },
+          "embroidery": {
+            "type": "string",
+            "title": "Embroidery"
+          },
+          "authorized_gi_user": {
+            "type": "string",
+            "title": "Authorized Gi User"
+          },
+          "address_authorized_gi_user": {
+            "type": "string",
+            "title": "Address Authorized Gi User"
+          },
+          "artisan_or_weaver": {
+            "type": "string",
+            "title": "Artisan Or Weaver"
+          },
+          "address_artisan_or_weaver": {
+            "type": "string",
+            "title": "Address Artisan Or Weaver"
+          }
+        },
+        "type": "object",
+        "required": [
+          "barcode",
+          "product_name",
+          "fabric_composition",
+          "yarn_spinning",
+          "fabric_weave",
+          "embroidery_yarn",
+          "design",
+          "size",
+          "weight",
+          "embroidery",
+          "authorized_gi_user",
+          "address_authorized_gi_user",
+          "artisan_or_weaver",
+          "address_artisan_or_weaver"
+        ],
+        "title": "ProductCreate"
+      },
+      "ProductResponse": {
+        "properties": {
+          "barcode": {
+            "type": "string",
+            "title": "Barcode"
+          },
+          "product_name": {
+            "type": "string",
+            "title": "Product Name"
+          },
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category",
+            "default": "Handloom / GI Craft"
+          },
+          "fabric_composition": {
+            "type": "string",
+            "title": "Fabric Composition"
+          },
+          "yarn_spinning": {
+            "type": "string",
+            "title": "Yarn Spinning"
+          },
+          "fabric_weave": {
+            "type": "string",
+            "title": "Fabric Weave"
+          },
+          "embroidery_yarn": {
+            "type": "string",
+            "title": "Embroidery Yarn"
+          },
+          "design": {
+            "type": "string",
+            "title": "Design"
+          },
+          "size": {
+            "type": "string",
+            "title": "Size"
+          },
+          "weight": {
+            "type": "string",
+            "title": "Weight"
+          },
+          "embroidery": {
+            "type": "string",
+            "title": "Embroidery"
+          },
+          "authorized_gi_user": {
+            "type": "string",
+            "title": "Authorized Gi User"
+          },
+          "address_authorized_gi_user": {
+            "type": "string",
+            "title": "Address Authorized Gi User"
+          },
+          "artisan_or_weaver": {
+            "type": "string",
+            "title": "Artisan Or Weaver"
+          },
+          "address_artisan_or_weaver": {
+            "type": "string",
+            "title": "Address Artisan Or Weaver"
+          },
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "barcode",
+          "product_name",
+          "fabric_composition",
+          "yarn_spinning",
+          "fabric_weave",
+          "embroidery_yarn",
+          "design",
+          "size",
+          "weight",
+          "embroidery",
+          "authorized_gi_user",
+          "address_authorized_gi_user",
+          "artisan_or_weaver",
+          "address_artisan_or_weaver",
+          "id"
+        ],
+        "title": "ProductResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}
